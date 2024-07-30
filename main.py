@@ -45,9 +45,4 @@ agent = initialize_agent(tools = tools,
                          agent=AgentType.SELF_ASK_WITH_SEARCH, 
                          verbose=True)
 
-
-# agent_executor.invoke({"input": "Who won the best actor on the academy awards in 2024?"})
-
-# agent_executor.invoke({"input":"What happened to the bridge in Baltimore?"})
-
-# agent_executor.invoke({"input": "Who won the best actress on the academy awards in 2024?"})
+agent.run("What is the hometown of the 2001 US PGA champion?")
