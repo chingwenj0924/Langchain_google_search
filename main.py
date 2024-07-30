@@ -1,10 +1,9 @@
 from langchain_google_community import GoogleSearchAPIWrapper
-from langchain_core.tools import Tool
+from langchain.agents import initialize_agent, Tool
+from langchain.agents import AgentType
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain_huggingface import ChatHuggingFace
 from langchain import hub
-from langchain.agents import create_structured_chat_agent
-from langchain.agents import AgentExecutor
 import os
 from dotenv import load_dotenv
 
@@ -16,11 +15,13 @@ GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
 # set up google search tool using Langchain Tool
 google_search = GoogleSearchAPIWrapper(google_api_key="AIzaSyCfVwVB7SQjl4OIrzYg98rTMbpIMMKeUTs", google_cse_id=GOOGLE_CSE_ID)
-google_tool = Tool(
-    name="google-search",
-    description="Search Google for recent results.",
-    func=google_search.run
-)
+tools = [
+    Tool(
+        name="Intermediate Answer",
+        func=google_search.run,
+        description="useful for when you need to ask with search"
+    )
+]
 
 google_search.run("What's Obama's first name?")
 
@@ -38,14 +39,12 @@ chat_model=ChatHuggingFace(llm=llm)
  
 prompt = hub.pull("hwchase17/structured-chat-agent")
 
-# create our langchain agent
-agent=create_structured_chat_agent(chat_model, [google_tool], prompt)
 
-# create an agentExecutor
-agent_executor=AgentExecutor(agent=agent, tools=[google_tool], verbose=True, handle_parsing_errors=True, max_iterations=5)
+agent = initialize_agent(tools = tools, 
+                         llm = llm, 
+                         agent=AgentType.SELF_ASK_WITH_SEARCH, 
+                         verbose=True)
 
-
-agent_executor.invoke({"input":"Who won the best picture on the academy awards in 2024?"})
 
 # agent_executor.invoke({"input": "Who won the best actor on the academy awards in 2024?"})
 
