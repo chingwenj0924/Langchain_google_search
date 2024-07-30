@@ -15,7 +15,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
 # set up google search tool using Langchain Tool
-google_search = GoogleSearchAPIWrapper(google_api_key="AIzaSyCfVwVB7SQjl4OIrzYg98rTMbpIMMKeUTs", google_cse_id=GOOGLE_CSE_ID)
+google_search = GoogleSearchAPIWrapper(google_api_key=GOOGLE_API_KEY, google_cse_id=GOOGLE_CSE_ID)
 google_tool = Tool(
     name="google-search",
     description="Search Google for recent results.",
